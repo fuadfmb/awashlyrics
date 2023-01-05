@@ -1,0 +1,35 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/"> Home </a></li>
+                <li class="breadcrumb-item active"> {{ page.page_title }} </li>
+            </ul>
+        </div>
+
+        <!-- page -->
+
+        <div class="col-12">
+
+            <div class="mheading">
+                <span class="text-white small">{{ page.page_title }}</span>
+            </div>
+
+            <div class="body">
+                <p>{{ page.page_body | safe}}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

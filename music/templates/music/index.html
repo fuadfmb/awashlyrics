@@ -1,0 +1,454 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- message -->
+        {% if message != '' and messageType != "" %}
+        {% if messageType == "error" %}
+        <div class="col m-2 alert-dismissible alert alert-danger fade show">
+            <button type="button" class="close small" data-dismiss="alert">&times;</button>
+            <strong>Error : </strong>
+            <span class="small">
+                {{message}}
+            </span>
+        </div>
+        {% elif messageType == "success" %}
+        <div class="col m-2 alert-dismissible alert alert-success fade show">
+            <button type="button" class="close small" data-dismiss="alert">&times;</button>
+            <strong>Success : </strong>
+            <span class="small">
+                {{message}}
+            </span>
+        </div>
+        {% endif%}
+        {% endif%}
+
+        <!-- intro -->
+        <div class="col-12 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <b class="text-dark">Kiilolee Music</b>
+                            <div class="small">
+                                One stop place to share, download and listen to any music !
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            {% if user.is_authenticated %}
+                            <div class="row">
+                                <div class="col-6 p-3">
+                                    <a href="{% url 'accounts:user-playlist' %}" class="btn btn-outline-dark col-12 ">
+                                        <span class="fa fa-list fa-1x "></span>
+                                        <span class="">Playlists</span>
+                                        <span class="spinner-grow spinner-grow-sm "></span>
+                                    </a>
+                                </div>
+                                <div class="col-6 p-3">
+                                    <a href="{% url 'accounts:user-favorites' %}" class="btn btn-outline-dark col-12 ">
+                                        <span class="fa fa-heart fa-1x "></span>
+                                        <span class="">Favorites</span>
+                                        <span class="spinner-grow spinner-grow-sm "></span>
+                                    </a>
+                                </div>
+
+                            </div>
+                            {% else %}
+
+                            <div class="text-center small">
+                                <span class="">
+                                    Login to use this site to the limit.
+                                </span> <br>
+                                <a href="{% url 'accounts:login' %}" class=" ">Login</a> /
+                                <a href="{% url 'accounts:signup' %}" class=" ">Sign Up</a>
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-8 mt-3">
+
+            <div class="col-12 ">
+                <form method="GET" action="search/">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="q" placeholder="Search">
+                        <select name="in" id="hj" class=" custom-select col-3 small">
+                            <option value="artists" selected>Artist</option>
+                            <option value="albums">Album</option>
+                            <option value="songs">Song</option>
+                        </select>
+                        <div class="input-group-append ">
+                            <button class="btn btn-dark" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+            <!-- list head -->
+            <div class="mheading col-12">
+                <span class="text-white small">Trending Songs</span>
+                <a href="{% url 'music:all_songs' %}" class="float-right text-warning small">
+                    <i class="fa fa-list fa-1x "></i>
+                    All Songs
+                </a>
+            </div>
+
+            {% for song in trending_songs %}
+
+            <div class="card col-12 bg-dark text-white card-margin-tb">
+                <div class="card-body">
+                    <div class="row " style="align-items: center; margin: -10px 0px;">
+                        <div class="ml-1">
+                            <div>
+                                <i class="fa fa-play-circle fa-3x" name="music" data-audio="/media/{{ song.song_file }}"
+                                    data-sid="s{{forloop.counter0}}"
+                                    data-title="{{ song.album.artist.full_name | title}} - {{ song.song_title | title}}"
+                                    id="s{{forloop.counter0}}"
+                                    onclick="setIndex( Number('{{ forloop.counter0 }}' ))"></i>
+                            </div>
+                        </div>
+                        <div style="width: 10px;">
+
+                        </div>
+                        <div class="col ">
+                            <div class="row " id="ggg">
+                                <a href="{% url 'music:song_page' artist=song.album.artist.art_username album=song.album.alb_slug song=song.song_slug %}"
+                                    class="text-warning" style="font-size: 14px;">
+                                    {{ song.album.artist.full_name | title}}
+                                    -
+                                    {{ song.song_title | title}} </a>
+                            </div>
+                            <div class="row ">
+                                <a href="#" class="text-white mr-2">
+                                    <i class="fa fa-heart-o "></i>
+                                </a>
+                                <a href="#" class="text-white ml-2 mr-2">
+                                    <i class="fa fa-download "></i>
+                                </a>
+                                <a href="#" class="text-white ml-2 mr-2">
+                                    <i class="fa fa-share-alt "></i>
+                                </a>
+                                <a href="#" class="text-white ml-2 mr-2">
+                                    <i class="fa fa-eye ">
+                                        <span class="small">{{ song.song_views }}</span>
+                                    </i>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {% endfor %}
+
+            <div class="row  ml-1 mr-1 my-4">
+                <h6 class="small">
+                    <a href="{% url 'music:all_songs' %}" class="text-warning border bg-dark p-1">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        Show more &raquo;
+                    </a>
+                </h6>
+            </div>
+
+
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Artists</span>
+                <a href="{% url 'music:all_artists' %}" class="float-right text-warning small">
+                    <i class="fa fa-list fa-1x "></i>
+                    All Artists
+                </a>
+            </div>
+
+            <div class=" row">
+
+                {% for artist in artists %}
+
+                <div class="col-4 col-sm-4 col-md-4 col-lg-3 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:artist_page' artist=artist.art_username %}" class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ artist.art_prof_pic }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    {{ artist.full_name | title}}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="row  ml-1 mr-1 my-4">
+                <h6 class="small">
+                    <a href="{% url 'music:all_artists' %}" class="text-warning border bg-dark p-1">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        Show more &raquo;
+                    </a>
+                </h6>
+            </div>
+
+            <!-- ROW 2 -->
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Albums</span>
+                <a href="{% url 'music:all_albums' %}" class="float-right text-warning small">
+                    <i class="fa fa-list fa-1x"></i>
+                    All Albums
+                </a>
+            </div>
+
+            <div class="row">
+
+
+                {% for album in albums %}
+                <div class="col-4 col-sm-4 col-md-4 col-lg-3 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title | title}} </span> <br>
+                                    {{ album.artist.full_name | title}}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+
+
+
+            </div>
+
+            <div class="row  ml-1 mr-1 my-4">
+                <h6 class="small">
+                    <a href="{% url 'music:all_albums' %}" class="text-warning border bg-dark p-1">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        Show more &raquo;
+                    </a>
+                </h6>
+            </div>
+
+
+
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4 mt-2">
+
+            <div class="card col-12 bg-dark text-white card-margin-tb small">
+                <h6 class="mt-3 text-warning"> Open for Ads </h6>
+                <hr style="border-bottom: 4px dotted darkorange;padding-bottom: -10px; width: 110px;">
+                <p>You can place your Ads here !<br>
+                    <a href="#contact" class="text-warning">contact us</a>
+                </p>
+            </div>
+
+            <!-- list head -->
+            <div class="mheading ">
+                <span class="text-white small">Trending Albums</span>
+                <a href="{% url 'music:all_albums' %}" class="float-right text-warning small">
+                    <i class="fa fa-list fa-1x"></i>
+                    All Albums
+                </a>
+            </div>
+            <!-- trending albums -->
+
+            <div class="row">
+
+                {% for album in trending_albums %}
+
+                <div class="col-4 col-sm-4 col-md-12 col-lg-6 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title | title}} </span><br>
+                                    {{ album.artist.full_name | title }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+
+
+            </div>
+
+            <div class="row  ml-1 mr-1 my-4">
+                <h6 class="small">
+                    <a href="{% url 'music:all_albums' %}" class="text-warning border bg-dark p-1">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        Show more &raquo;
+                    </a>
+                </h6>
+            </div>
+
+            <div class="mheading">
+                <span class="text-white small">Categories</span>
+                <a href="{% url 'music:category' %}" class="float-right text-warning small">
+                    <i class="fa fa-list fa-1x "></i>
+                    Categories &nbsp;
+                </a>
+            </div>
+            <div class="row">
+
+                <div class="col">
+                    <div class="list-group  ">
+
+                        {% for category in categories %}
+
+                        <a href="{% url 'music:category_slug' category=category.cat_slug %}"
+                            class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-dark small">
+                            {{ category.cat_name | title}}
+                            <span class="badge badge-warning badge-pill"> {{ category.song_set.all.count }} </span>
+                        </a>
+
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="mheading">
+                <span class="text-white small">Mobile App</span>
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Kiilolee App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- player card -->
+{% if trending_songs %}
+<div class=" bg-dark text-white fixed-bottom">
+    <div class="container" style="margin-top: -5px; margin-bottom: -5px;">
+        <div class="card-body small">
+
+            <div class="d-flex flex-row align-items-center">
+                <div class="prev-track" onclick="prevTrack()">
+                    <i class="fa fa-step-backward fa-2x"></i>
+                </div>
+                <div style="width: 10px;"></div>
+                <div class="playpause-track" onclick="playpauseTrack()">
+                    <i class="fa fa-play-circle fa-4x"></i>
+                </div>
+                <div style="width: 10px;"></div>
+                <div class="next-track" onclick="nextTrack()">
+                    <i class="fa fa-step-forward fa-2x"></i>
+                </div>
+
+
+                <div style="width: 20px;"></div>
+
+                <div class="p-2">
+                    <h6 class="track-name">Elemo Ali - Ibsituu</h6>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class=" col-3 col-xs-4 co-sm-4 col-md-2 col-lg-2">
+                    <div class="row align-items-center">
+                        <i class="fa fa-volume-up col-1"></i>
+                        <div class="col">
+                            <input type="range" min="0" max="100" value="50" class="volume_slider"
+                                onchange="setVolume()" style="width: 100%;">
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div style="width: 10px;"></div>
+
+                <div class=" col col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div class="row align-items-center">
+                        <i class="current-time">00:00</i> / <i class="total-duration">00:00</i>
+                        <div style="width: 10px;"></div>
+                        <div class="col">
+                            <input type="range" style="width: 100%;" min="1" max="100" value="0" class="seek_slider"
+                                onchange="seekTo()" onclick="seekTo()">
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}
+
+{% block margin %}
+
+<div style="height: 80px;" class=" bg-dark">
+    <span></span>
+</div>
+
+<script src="{% static 'player.js' %}"></script>
+
+{% endblock%}

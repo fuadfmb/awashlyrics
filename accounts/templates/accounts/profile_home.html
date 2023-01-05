@@ -1,0 +1,148 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Profile</li>
+            </ul>
+        </div>
+
+        <!-- songs - list -->
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <div class="row m-1">
+                <div class="col card m-1 ">
+                    <a href="{% url 'accounts:user-playlist' %}" class="text-center mmlink">
+                        <div class="card-body">
+                            <span class="fa fa-list fa-1x text-danger"></span>
+                            <span class="text-dark">Your Playlist</span>
+                            <span class="spinner-grow spinner-grow-sm text-dark"></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col card m-1 text-center">
+                    <a href="{% url 'accounts:user-favorites' %}" class="text-center mmlink">
+                        <div class="card-body">
+                            <span class="fa fa-heart fa-1x text-danger"></span>
+                            <span class="text-dark">Your Favorites</span>
+                            <span class="spinner-grow spinner-grow-sm text-dark"></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    <span class="text-warning">
+                        Profile
+                    </span>
+            </div>
+
+            <div class="col text-center my-3">
+                <span class="">
+                    <i class="fa fa-user fa-3x"></i>
+                </span>
+            </div>
+
+            <div class="card p-2">
+                <table>
+                    <tr>
+                        <td>Username</td>
+                        <td>{{user.username | title}}</td>
+                    </tr>
+                    <tr>
+                        <td>First Name</td>
+                        <td>{{user.first_name | title}}</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td>{{user.last_name | title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{user.email | title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date Joined</td>
+                        <td>{{user.date_joined | title }}</td>
+                    </tr>
+                    <tr>
+                        <td>SuperUser</td>
+                        <td>
+                            {% if user.is_superuser %}
+                            <i class="fa fa-check text-success"></i>
+                            {{user.is_superuser | title }}
+                            {% else %}
+                            <i class="fa fa-close text-danger"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                <div class="my-3">
+                    <a class="btn btn-primary" href="{% url 'accounts:user-edit' %}">
+                        Edit
+                    </a>
+                    <a class="btn btn-danger" href="{% url 'accounts:user-delete' %}">
+                        Delete
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Mobile App
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

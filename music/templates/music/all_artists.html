@@ -1,0 +1,170 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/"> Home </a></li>
+                <li class="breadcrumb-item active"> All Artists </li>
+            </ul>
+        </div>
+
+        <!-- art - list -->
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">All Artists</span>
+            </div>
+
+            <div class="row">
+
+                {% for artist in artists %}
+
+                <div class="col-4 col-sm-4 col-md-4 col-lg-3 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:artist_page' artist=artist.art_username %}" class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ artist.art_prof_pic }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    {{ artist.full_name | title }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <span class="current">
+                Page {{ artists.number }} of {{ artists.paginator.num_pages }}.
+            </span>
+            <ul class="pagination mt-1">
+
+                {% if artists.has_previous %}
+                <li class="page-item small"><a class="page-link bg-dark text-white" href="?art=1">
+                        &laquo; first </a></li>
+                <li class="page-item small"><a class="page-link bg-dark text-white"
+                        href="?art={{ artists.previous_page_number }}"> previous </a></li>
+                {% endif %}
+
+                {% if artists.has_next %}
+                <li class="page-item small"><a class="page-link bg-dark text-white"
+                        href="?art={{ artists.next_page_number }}">Next</a></li>
+                <li class="page-item small"><a class="page-link bg-dark text-white"
+                        href="?art={{ artists.paginator.num_pages }}">last &raquo;</a></li>
+                {% endif %}
+            </ul>
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Trending Albums</span>
+            </div>
+            <!-- trending albums -->
+
+            <div class="row">
+
+                {% for album in trending_albums %}
+
+                <div class="col-4 col-sm-4 col-md-12 col-lg-6 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title | title }} </span> <br>
+                                    {{ album.artist.full_name | title }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Collection</span>
+            </div>
+            <div class="row">
+
+                <!-- genre -->
+
+                <div class="col">
+                    <div class="list-group  ">
+
+                        {% for category in categories %}
+
+                        <a href="{% url 'music:category_slug' category=category.cat_slug %}"
+                            class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-dark small">
+                            {{ category.cat_name | title }}
+                            <span class="badge badge-warning badge-pill"> {{ category.song_set.all.count }} </span>
+                        </a>
+
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Mobile App</span>
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

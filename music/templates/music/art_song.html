@@ -1,0 +1,407 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+<style>
+    .redd {
+        border: 1px solid red;
+    }
+
+    .player {
+        height: 80vh;
+    }
+
+    .fa-btn {
+        margin: 10px;
+    }
+
+    .fa-btn:hover {
+        opacity: 0.8;
+    }
+
+
+    .slider_container {
+        width: 75%;
+        max-width: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .seek_slider,
+    .volume_slider {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        height: 5px;
+        background: black;
+        opacity: 0.7;
+        cursor: pointer;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .seek_slider::-webkit-slider-thumb,
+    .volume_slider::-moz-range-thumb,
+    .volume_slider::-webkit-slider-thumb,
+    .seek_slider::-moz-range-thumb {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        background: rgb(255, 204, 0);
+        border-color: rgb(0, 0, 0);
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .seek_slider:hover,
+    .volume_slider:hover {
+        opacity: 1.0;
+    }
+
+    .seek_slider {
+        width: 60%;
+    }
+
+    .volume_slider {
+        width: 30%;
+    }
+
+    .current-time,
+    .total-duration {
+        padding: 10px;
+    }
+
+    i.fa-volume-down,
+    i.fa-volume-up {
+        padding: 10px;
+    }
+
+    i.fa-play-circle,
+    i.fa-pause-circle,
+    i.fa-step-forward,
+    i.fa-step-backward {
+        cursor: pointer;
+    }
+
+    .buttons {
+        margin: -10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- modal delete -->
+    <div class="modal " id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Are you sure?</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Your comment will be deleted forever !
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit" id="cid" value="" name="delete">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /modal -->
+
+    <!-- modal edit -->
+    <div class="modal " id="editModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit your comment</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="comment">Your comment:</label>
+                            <textarea class="form-control" rows="5" id="id_comment"
+                                name="comment">comment is...</textarea>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit" id="ccid" value="" name="edit">
+                            Update Comment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /modal -->
+
+    <!-- message -->
+    {% if message != '' and messageType != "" %}
+    {% if messageType == "error" %}
+    <div class="col m-2 alert-dismissible alert alert-danger fade show">
+        <button type="button" class="close small" data-dismiss="alert">&times;</button>
+        <strong>Error : </strong>
+        <span class="small">
+            {{message}}
+        </span>
+    </div>
+    {% elif messageType == "success" %}
+    <div class="col m-2 alert-dismissible alert alert-success fade show">
+        <button type="button" class="close small" data-dismiss="alert">&times;</button>
+        <strong>Success : </strong>
+        <span class="small">
+            {{message}}
+        </span>
+    </div>
+    {% endif%}
+    {% endif%}
+
+    <!-- breadcrumbs -->
+    <div class="col-12 " style="padding: -10px; margin-left: -15px;">
+        <ul class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/"> Home </a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'music:artist_page' artist=artist.art_username %}"> {{artist.full_name }} </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}">
+                    {{ album.alb_title }}</a>
+            </li>
+            <li class="breadcrumb-item active">{{ song.song_title }} </li>
+        </ul>
+    </div>
+
+    {% if has_lyrics == True %}
+    <a href="{% url 'music:lyrics_page' artist=song.album.artist.art_username album=song.album.alb_slug song=song.song_slug %}"
+        class="btn btn-outline-danger">
+        <span class="fa fa-heart-o fa-1x "></span>
+        <span class="">Lyrics Available</span>
+        <span class="spinner-grow spinner-grow-sm "></span>
+    </a>
+    {% endif %}
+
+    <!-- container -->
+    <div class="d-flex player flex-wrap align-content-center align-items-center ">
+
+        <div class="d-flex flex-column flex-wrap  align-items-center w-100 container">
+            <div class="details ">
+                <div class="track-art text-center buttons">
+                    <img src="/media/{{ artist.art_prof_pic }}" alt="cover" class="  "
+                        style="height: 150px; width: 150px; border-radius: 10px; ">
+                </div>
+                <h6 class="track-name text-center m-4 font-weight-bold">
+                    {{ artist.full_name | title }} - {{ song.song_title | title }}
+                </h6>
+            </div>
+            <div class="buttons row align-items-center">
+
+                <button class="btnlike fa-btn fa-2x" {% if user.is_authenticated %} onclick="playlist()" {% endif%}
+                    data-toggle="tooltip" title="Add to playlist">
+                    {% if playlisted %}
+                    <i class="fa fa-minus-circle text-danger" id="playlisted"></i>
+                    {% else %}
+                    <i class="fa fa-plus-circle" id="playlisted"></i>
+                    {% endif %}
+                </button>
+
+                <button class="btnlike fa-btn fa-2x" {% if user.is_authenticated %} onclick="like()" {% endif%}
+                    data-toggle="tooltip" title="Add to favorites">
+                    {% if favorited %}
+                    <i class="fa fa-heart text-danger" id="favor"></i>
+                    {% else %}
+                    <i class="fa fa-heart-o" id="favor"></i>
+                    {% endif %}
+                </button>
+                <div class="fa-btn playpause-track" onclick="playpauseTrack2()">
+                    <i class="fa fa-play-circle fa-4x playpause-track" name="music"
+                        data-audio="/media/{{ song.song_file }}" data-sid="s1"
+                        data-title="{{ artist.full_name | title }} - {{ song.song_title | title }}"></i>
+                </div>
+                <div class="fa-btn">
+                    <img src="{% static 'icons/icons8_download.png'%}" class="fa fa-2x">
+                </div>
+                <div class="fa-btn">
+                    <img src="{% static 'icons/icons8_repeat.png'%}" class="fa fa-2x">
+                </div>
+                <!-- endreactions :) -->
+            </div>
+            <div class="slider_container">
+                <div class="current-time">00:00</div>
+                <input type="range" min="0" max="100" value="0" class="seek_slider" onchange="seekTo()">
+                <div class="total-duration">00:00</div>
+            </div>
+            <div class="slider_container buttons">
+                <i class="fa fa-volume-down"></i>
+                <input type="range" min="0" max="100" value="50" class="volume_slider" onchange="setVolume()">
+                <i class="fa fa-volume-up"></i>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="mheading">
+        <span class="text-white small">Comments and Reviews</span>
+    </div>
+
+
+    <!-- form goes here -->
+
+    {% if user.is_authenticated %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="comment">Your Comment:</label>
+            <textarea class="form-control" rows="2" id="comment" name="comment">{{ userInput }}</textarea>
+        </div>
+        <button class="btn btn-primary ">Comment !</button>
+    </form>
+    {% endif %}
+
+    {% if comments %}
+
+    <div class="m-1">
+        {% if comments.count > 1 %}
+        <p class="">{{ comments.count }} comments</p>
+        {% else %}
+        <p class="">{{ comments.count }} comment</p>
+        {% endif %}
+    </div>
+
+    {% for comment in comments %}
+    <div class="comment p-3 my-2 col-12 bg-dark">
+        <div class="media-body" style="margin: -10px 0px !important;">
+            <p class="text-warning">
+                <i class="fa fa-user fa-1x text-white"></i> &nbsp;
+                {{ comment.commented_user.username | title }}
+                <br>
+                <span class="small text-warning">
+                    <i class="fa fa-calendar text-white"></i> &nbsp;
+                    {{ comment.commented_date }}</span>
+                <br>
+                <span class="small text-white">
+                    <i class="fa fa-comment fa-1x text-white"></i> &nbsp;
+                    {{ comment.short_comment }}
+                </span>
+            </p>
+
+            {%if user.id == comment.commented_user.id %}
+            <div class="row p-2">
+                <form action="" method="post" class="m-1">
+                    {% csrf_token %}
+
+                    <button type="button" class="btn border-primary text-white btn-sm" name="edit"
+                        onclick="editModal( '{{comment.comment | addslashes }}','{{comment.id}}' )">Edit</button>
+                </form>
+
+                <form action="" method="post" class="m-1">
+                    {% csrf_token %}
+                    <button type="button" class="btn border-danger text-white btn-sm"
+                        onclick="deleteModal( '{{ comment.id }}' )">
+                        Delete
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="m-2">No comments yet !</p>
+    {% endif %}
+
+
+</div>
+
+
+{% endblock %}
+
+{% block margin %}
+
+<!-- modal -->
+{% if user.is_authenticated %}
+<script>
+    function deleteModal(x) {
+        var c = document.getElementById('cid');
+        c.value = x;
+        $("#deleteModal").modal();
+    }
+    function editModal(comm, vall) {
+        var cc = document.getElementById('id_comment');
+        var mbtn = document.getElementById('ccid');
+        cc.value = comm;
+        mbtn.value = vall;
+        $('#editModal').modal();
+    }
+
+
+    function like() {
+        // 
+        var tokens = document.getElementsByName('csrfmiddlewaretoken')
+        $.post("",
+            {
+                csrfmiddlewaretoken: tokens[0].value,
+                like: "like",
+            },
+            function (data, status) {
+                var x = document.getElementById('favor');
+                if (status == 'success' && data == "liked") {
+                    x.classList = "fa fa-heart text-danger"
+                }
+                else if (status == 'success' && data == "unliked") {
+                    x.classList = "fa fa-heart-o"
+                }
+                else {
+                    console.log("err...");
+                }
+            });
+    }
+
+    function playlist() {
+        var tokens = document.getElementsByName('csrfmiddlewaretoken')
+        $.post("",
+            {
+                csrfmiddlewaretoken: tokens[0].value,
+                playlist: "playlist",
+            },
+            function (data, status) {
+                var x = document.getElementById('playlisted');
+                if (status == 'success' && data == "added") {
+                    x.classList = "fa fa-minus-circle text-danger"
+                }
+                else if (status == 'success' && data == "removed") {
+                    x.classList = "fa fa-plus-circle"
+                }
+                else {
+                    console.log("err...");
+                }
+            });
+    }
+</script>
+{% endif %}
+<!-- /modal -->
+
+<script src="{% static 'player.js' %}"></script>
+
+{% endblock%}

@@ -1,0 +1,174 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/"> Home </a></li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'music:gallery' %}">Gallery</a>
+                </li>
+                <li class="breadcrumb-item active">{{ artist.full_name | title }}</li>
+
+            </ul>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Photos of {{ artist.full_name | title }}</span>
+            </div>
+
+            {% if photos %}
+            <div class="row">
+                {% for photo in photos %}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                    <img src="/media/{{ photo.image_file }}" class="artImg m-1" alt="{{ artist.full_name }}"
+                        style="width: 100%; height: 220px;">
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <h6 class="small">No photos yet !</h6>
+            {% endif%}
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Trending Albums</span>
+            </div>
+
+            <div class="row">
+
+                {% for album in trending_albums %}
+
+                <div class="col-4 col-sm-4 col-md-12 col-lg-6 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title | title }} </span>
+                                    <br>
+                                    {{ album.artist.full_name | title }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Collection</span>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="list-group  ">
+
+                        {% for category in categories %}
+
+                        <a href="{% url 'music:category_slug' category=category.cat_slug %}"
+                            class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-dark small">
+                            {{ category.cat_name | title }}
+                            <span class="badge badge-warning badge-pill"> {{ category.song_set.all.count }} </span>
+                        </a>
+
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Mobile App</span>
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card  bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block margin %}
+
+<div id="myModal" class="modal">
+    <span class="text-white close">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption">Artist Image</div>
+</div>
+
+<script>
+    var modal = document.getElementById('myModal');
+
+    var imgs = document.getElementsByClassName('artImg');
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+
+    // when clicked...
+    for (var i = 0; i < imgs.length; i++) {
+        imgs[i].onclick = function () {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            captionText.innerHTML = this.alt;
+        }
+    }
+
+    var span = document.getElementsByClassName("close")[0];
+    modal.onclick = function () {
+        modal.style.display = "none";
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item "><a href="{% url 'accounts:user-home' %}">Profile</a></a></li>
+                <li class="breadcrumb-item active">Delete Account</li>
+            </ul>
+        </div>
+
+        <!-- songs - list -->
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    <span class="text-warning">
+                        Delete Account
+                    </span>
+            </div>
+
+            <div class="col text-center my-3">
+                <span class="">
+                    <i class="fa fa-user fa-3x text-danger"></i>
+                </span>
+            </div>
+
+            <div class="card ">
+                <div class="card-header bg-danger text-white">
+                    <h4>
+                        <i class="fa fa-warning"></i>
+                        Warning
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="">
+                        Deleted accounts cannot be recovered !
+                    </p>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger card-link" name="delete" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Mobile App
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

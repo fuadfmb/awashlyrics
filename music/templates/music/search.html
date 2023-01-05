@@ -1,0 +1,394 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/"> Home </a></li>
+                <li class="breadcrumb-item active">Search</li>
+
+            </ul>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Search results for <span class="text-warning">'{{ query }}'</span> in
+                    <span class="text-warning">{{ table }}</span>.</span>
+            </div>
+
+            <div class="row">
+                <!-- populate items here -->
+                {% if artists %}
+
+                {% for artist in artists %}
+
+                <div class="col-4 col-sm-4 col-md-4 col-lg-3 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:artist_page' artist=artist.art_username %}" class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ artist.art_prof_pic }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    {{ artist.full_name | title}}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+                <div class="col-12">
+                    <!-- pagination -->
+                    {% if artists.paginator.num_pages != 1 %}
+                    <span class="current">
+                        Page {{ artists.number }} of {{ artists.paginator.num_pages }}.
+                    </span>
+                    <ul class="pagination mt-1">
+
+                        {% if artists.has_previous %}
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page=1">
+                                &laquo; first </a></li>
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{ artists.previous_page_number }}"> previous </a>
+                        </li>
+                        {% endif %}
+
+
+                        {% if artists.has_next %}
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{artists.next_page_number }}">Next</a></li>
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{ artists.paginator.num_pages }}">last &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                {% elif albums %}
+
+                {% for album in albums %}
+                <div class="col-4 col-sm-4 col-md-4 col-lg-3 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title | title}} </span> <br>
+                                    {{ album.artist.full_name | title}}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+
+                <div class="col-12">
+                    <!-- pagination -->
+                    {% if albums.paginator.num_pages != 1 %}
+                    <span class="current">
+                        Page {{ albums.number }} of {{ albums.paginator.num_pages }}.
+                    </span>
+                    <ul class="pagination mt-1">
+
+                        {% if albums.has_previous %}
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page=1">
+                                &laquo; first </a></li>
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{ albums.previous_page_number }}"> previous </a>
+                        </li>
+                        {% endif %}
+
+
+                        {% if albums.has_next %}
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{albums.next_page_number }}">Next</a></li>
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{ albums.paginator.num_pages }}">last &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                {% elif songs %}
+
+                {% for song in songs %}
+
+                <div class="col-12">
+                    <div class="card  bg-dark text-white card-margin-tb">
+                        <div class="card-body">
+                            <div class="row " style="align-items: center; margin: -10px 0px;">
+                                <div class="ml-1">
+                                    <div>
+                                        <i class="fa fa-play-circle fa-3x" name="music"
+                                            data-audio="/media/{{ song.song_file }}" data-sid="s{{forloop.counter0}}"
+                                            data-title="{{ song.album.artist.full_name | title}} - {{ song.song_title | title}}"
+                                            id="s{{forloop.counter0}}" onclick="setIndex( {{ forloop.counter0}} )"></i>
+                                    </div>
+                                </div>
+                                <div style="width: 10px;">
+
+                                </div>
+                                <div class="col ">
+                                    <div class="row " id="ggg">
+                                        <a href="{% url 'music:song_page' artist=song.album.artist.art_username album=song.album.alb_slug song=song.song_slug %}"
+                                            class="text-warning" style="font-size: 14px;">
+                                            {{ song.album.artist.full_name | title}}
+                                            -
+                                            {{ song.song_title | title}} </a>
+                                    </div>
+                                    <div class="row ">
+                                        <a href="#" class="text-white mr-2">
+                                            <i class="fa fa-heart-o "></i>
+                                        </a>
+                                        <a href="#" class="text-white ml-2 mr-2">
+                                            <i class="fa fa-download "></i>
+                                        </a>
+                                        <a href="#" class="text-white ml-2 mr-2">
+                                            <i class="fa fa-share-alt "></i>
+                                        </a>
+                                        <a href="#" class="text-white ml-2 mr-2">
+                                            <i class="fa fa-eye ">
+                                                <span class="small">1234</span>
+                                            </i>
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+                <div class="col-12">
+                    <!-- pagination -->
+                    {% if songs.paginator.num_pages != 1 %}
+                    <span class="current">
+                        Page {{ songs.number }} of {{ songs.paginator.num_pages }}.
+                    </span>
+                    <ul class="pagination mt-1">
+
+                        {% if songs.has_previous %}
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page=1">
+                                &laquo; first </a></li>
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{ songs.previous_page_number }}"> previous </a>
+                        </li>
+                        {% endif %}
+
+
+                        {% if songs.has_next %}
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{songs.next_page_number }}">Next</a></li>
+                        <li class="page-item small"><a class="page-link bg-dark text-white"
+                                href="?in={{table}}&q={{query}}&page={{ songs.paginator.num_pages }}">last &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                {% else %}
+                <div class="col my-4 text-danger">
+                    No items found !
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Trending Albums</span>
+            </div>
+
+            <div class="row">
+
+                {% for album in trending_albums %}
+
+                <div class="col-4 col-sm-4 col-md-12 col-lg-6 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title | title }} </span>
+                                    <br>
+                                    {{ album.artist.full_name | title }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Collection</span>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="list-group  ">
+
+                        {% for category in categories %}
+
+                        <a href="{% url 'music:category_slug' category=category.cat_slug %}"
+                            class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-dark small">
+                            {{ category.cat_name | title }}
+                            <span class="badge badge-warning badge-pill"> {{ category.song_set.all.count }} </span>
+                        </a>
+
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">Mobile App</span>
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card  bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% if songs %}
+
+<div class=" bg-dark text-white fixed-bottom">
+    <div class="container" style="margin-top: -5px; margin-bottom: -5px;">
+        <div class="card-body small">
+
+            <div class="d-flex flex-row align-items-center">
+                <div class="prev-track" onclick="prevTrack()">
+                    <i class="fa fa-step-backward fa-2x"></i>
+                </div>
+                <div style="width: 10px;"></div>
+                <div class="playpause-track" onclick="playpauseTrack()">
+                    <i class="fa fa-play-circle fa-4x"></i>
+                </div>
+                <div style="width: 10px;"></div>
+                <div class="next-track" onclick="nextTrack()">
+                    <i class="fa fa-step-forward fa-2x"></i>
+                </div>
+
+
+                <div style="width: 20px;"></div>
+
+                <div class="p-2">
+                    <h6 class="track-name">X - X</h6>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class=" col-3 col-xs-4 co-sm-4 col-md-2 col-lg-2">
+                    <div class="row align-items-center">
+                        <i class="fa fa-volume-up col-1"></i>
+                        <div class="col">
+                            <input type="range" min="0" max="100" value="50" class="volume_slider"
+                                onchange="setVolume()" style="width: 100%;">
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div style="width: 10px;"></div>
+
+                <div class=" col col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div class="row align-items-center">
+                        <i class="current-time">00:00</i> / <i class="total-duration">00:00</i>
+                        <div style="width: 10px;"></div>
+                        <div class="col">
+                            <input type="range" style="width: 100%;" min="1" max="100" value="0" class="seek_slider"
+                                onchange="seekTo()">
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+
+{% block margin %}
+
+{% if songs %}
+<div style="height: 80px;" class=" bg-dark">
+    <span></span>
+</div>
+
+<script src="{% static 'player.js' %}"></script>
+{% endif %}
+
+{% endblock%}

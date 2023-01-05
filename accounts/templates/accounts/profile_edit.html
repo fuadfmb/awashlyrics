@@ -1,0 +1,209 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- message -->
+        {% if message and messageType != "" %}
+        {% if messageType == "error" %}
+        <div class="col m-2 alert-dismissible alert alert-danger fade show">
+            <button type="button" class="close small" data-dismiss="alert">&times;</button>
+            <strong>Please correct the following errors : </strong> <br>
+            <span class="small">
+                <ul>
+                    {% for msg in message %}
+                    <li>{{ msg }}</li>
+                    {% endfor %}
+                </ul>
+            </span>
+        </div>
+        {% elif messageType == "success" %}
+        <div class="col m-2 alert-dismissible alert alert-success fade show">
+            <button type="button" class="close small" data-dismiss="alert">&times;</button>
+            <strong>Success : </strong>
+            <span class="small">
+                <ul>
+                    {% for msg in message %}
+                    <li>{{ msg }}</li>
+                    {% endfor %}
+                </ul>
+            </span>
+        </div>
+        {% endif%}
+        {% endif%}
+
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item "><a href="{% url 'accounts:user-home' %}">Profile</a></a></li>
+                <li class="breadcrumb-item active">Edit</li>
+            </ul>
+        </div>
+
+        <!-- songs - list -->
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    <span class="text-warning">
+                        Edit Profile
+                    </span>
+            </div>
+
+
+
+            {% if messageType == "success" %}
+            <div class="card m-1">
+
+                <div class="card-body">
+                    <h5 class="mb-5"> Profile Updated Successfully !</h5>
+                    <a href="{% url 'accounts:user-home' %}" class="btn btn-primary">
+                        Profile
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+
+            <div class="col text-center my-3">
+                <span class="">
+                    <i class="fa fa-user fa-3x"></i>
+                </span>
+            </div>
+
+            <form action="" method="post" class="">
+                {% csrf_token %}
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="form-group">
+                    <p class="text-danger"></p> {{ form.first_name.errors }} </p>
+                    <label for="{{ form.first_name.id_for_label }}">First Name :</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-user"></span>
+                        </div>
+                        <input type="text" name="first_name" autofocus="" id="id_first_name" class="form-control "
+                            value="{{user.first_name}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p class="text-danger"></p> {{ form.last_name.errors }} </p>
+                    <label for="{{ form.last_name.id_for_label }}">Last Name :</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-user"></span>
+                        </div>
+                        <input type="text" name="last_name" autofocus="" id="id_last_name" class="form-control "
+                            value="{{user.last_name}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p class="text-danger"></p> {{ form.email.errors }} </p>
+                    <label for="{{ form.email.id_for_label }}">Email :</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-envelope"></span>
+                        </div>
+                        <input type="text" name="email" autofocus="" id="id_email" class="form-control "
+                            value="{{user.email}}">
+                    </div>
+                </div>
+
+
+
+                {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{request.GET.next}}">
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary">Update</button>
+
+            </form>
+
+            {% endif %}
+
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Mobile App
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<style>
+    .showhide {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    let show = false;
+    let i_elem = document.getElementById('showhide');
+    let id_pwd = document.getElementById('id_password')
+
+    function showhide() {
+        if (show) {
+            i_elem.classList = "input-group-text fa fa-eye-slash"
+            id_pwd.type = "password"
+            show = false;
+        }
+        else {
+            i_elem.classList = "input-group-text fa fa-eye"
+            id_pwd.type = "text"
+            show = true;
+        }
+    }
+</script>
+
+
+{% endblock %}

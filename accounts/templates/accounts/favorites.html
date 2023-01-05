@@ -1,0 +1,221 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item "><a href="{% url 'accounts:user-home' %}">Profile</a></a></li>
+                <li class="breadcrumb-item active">Favorites</li>
+            </ul>
+        </div>
+
+        <!-- songs - list -->
+
+        <div class="col-12 col-sm-12 col-md-8">
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Songs you liked
+            </div>
+
+            <div class="card">
+                <div class="card-body m-2">
+                    <div>
+                        <p>{{favorites.count}} songs</p>
+                    </div>
+                    <button class="btn btn-info" onclick="playpauseTrack()">
+                        <span class="fa fa-play"> </span> &nbsp;
+                        Play All
+                    </button>
+                    <button class="btn btn-warning" onclick="" disabled>
+                        <span class="fa fa-list"> </span> &nbsp;
+                        Shuffle
+                    </button>
+                    <button class="btn btn-success" onclick="" disabled>
+                        <span class="fa fa-repeat"> </span> &nbsp;
+                        Repeat
+                    </button>
+                </div>
+            </div>
+
+            <ul class="list-group list-group-flush my-3">
+                {% for favorite in favorites %}
+
+                <li class="list-group-item ">
+                    <span>
+                        <i class="fa fa-play" name="music" style="cursor:pointer"
+                            data-audio="/media/{{ favorite.liked_song.song_file }}" data-sid="s{{forloop.counter0}}"
+                            data-title="{{ favorite.liked_song.album.artist.full_name | title}} - {{ favorite.liked_song.song_title | title}}"
+                            id="s{{forloop.counter0}}" onclick="setIndex( Number('{{ forloop.counter0 }}') )"></i>
+                        &nbsp;
+                    </span>
+                    <span class="">
+                        {{ favorite.liked_song.album.artist.full_name | title}}
+                        -
+                        <span class="font-weight-bold text-danger">{{ favorite.liked_song.song_title | title}}</span>
+                    </span>
+                    <button class="text-danger btnlike float-right font-weight-bold " id="{{favorite.id}}"
+                        onclick="removefromPL( '{{ favorite.id }}' )">
+                        &times;
+                    </button>
+                </li>
+
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Mobile App
+            </div>
+
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- player card -->
+<div class=" bg-dark text-white fixed-bottom">
+    <div class="container" style="margin-top: -5px; margin-bottom: -5px;">
+        <div class="card-body small">
+
+            <div class="d-flex flex-row align-items-center">
+                <div class="prev-track" onclick="prevTrack()">
+                    <i class="fa fa-step-backward fa-2x"></i>
+                </div>
+                <div style="width: 10px;"></div>
+                <div class="playpause-track" onclick="playpauseTrack()">
+                    <i class="fa fa-play-circle fa-4x"></i>
+                </div>
+                <div style="width: 10px;"></div>
+                <div class="next-track" onclick="nextTrack()">
+                    <i class="fa fa-step-forward fa-2x"></i>
+                </div>
+
+
+                <div style="width: 20px;"></div>
+
+                <div class="p-2">
+                    <h6 class="track-name">Elemo Ali - Ibsituu</h6>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class=" col-3 col-xs-4 co-sm-4 col-md-2 col-lg-2">
+                    <div class="row align-items-center">
+                        <i class="fa fa-volume-up col-1"></i>
+                        <div class="col">
+                            <input type="range" min="0" max="100" value="50" class="volume_slider"
+                                onchange="setVolume()" style="width: 100%;">
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div style="width: 10px;"></div>
+
+                <div class=" col col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div class="row align-items-center">
+                        <i class="current-time">00:00</i> / <i class="total-duration">00:00</i>
+                        <div style="width: 10px;"></div>
+                        <div class="col">
+                            <input type="range" style="width: 100%;" min="1" max="100" value="0" class="seek_slider"
+                                onchange="seekTo()">
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block margin %}
+
+<div style="height: 80px;" class=" bg-dark">
+    <span></span>
+</div>
+
+<script src="{% static 'player.js' %}"></script>
+
+<script>
+    function removefromPL(elem_id) {
+        // let c = document.getElementById(elem_id);
+        // c.parentElement.remove()
+        var tokens = document.getElementsByName('csrfmiddlewaretoken')
+        $.post("",
+            {
+                csrfmiddlewaretoken: tokens[0].value,
+                remove: elem_id,
+            },
+            function (data, status) {
+                console.log(data);
+                var x = document.getElementById(elem_id);
+                if (status == 'success' && data == "removed") {
+                    x.parentElement.remove()
+                }
+                else if (status == 'success' && data == "error") {
+                    // currsong should be updated
+
+                }
+                else {
+                    console.log("err...");
+                }
+            });
+    }
+
+
+</script>
+
+{% endblock%}

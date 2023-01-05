@@ -1,0 +1,125 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+
+    <title>Kiilolee Music</title>
+</head>
+
+<style>
+    body {
+        background-color: #eee !important;
+    }
+</style>
+
+<body>
+
+    <div class="container">
+
+        <br>
+
+        <h2 class="text-primary">Sign up</h2>
+
+        <br><br>
+
+        <form class="site-form" action="{% url 'accounts:signup' %}" method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username :</label>
+                <p class="text-secondary small"> {{ form.username.help_text }} </p>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-user"></span>
+                    </div>
+                    <input type="text" name="username" autofocus="" id="id_username" class="form-control" required="">
+                </div>
+                <ul>
+                    {% for error in form.username.errors %}
+                    <li class="text-danger small">{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password :</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-lock"></span>
+                    </div>
+                    <input type="password" name="password1" id="id_password1" class="form-control" required="">
+                </div>
+                <ul>
+                    {% for error in form.password1.errors %}
+                    <li class="text-danger small">{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password confirmation :</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-lock"></span>
+                    </div>
+                    <input type="password" name="password2" id="id_password2" class="form-control" required="">
+                    <div class="input-group-append showhide" onclick="showhide()">
+                        <span class="input-group-text fa fa-eye-slash" id="showhide"></span>
+                    </div>
+                </div>
+                <ul>
+                    {% for error in form.password2.errors %}
+                    <li class="text-danger small">{{ error|escape }}</li>
+                    {% endfor %}
+            </div>
+
+            {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{request.GET.next}}">
+            {% endif %}
+
+            <input class="btn btn-primary" type="submit" value="Signup">
+        </form>
+
+        <h6 class="my-3">Already have an account? <a href="{% url 'accounts:login' %}">Log In here</a>.</h6>
+
+    </div>
+
+    <style>
+        .showhide {
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        let show = false;
+        let i_elem = document.getElementById('showhide');
+        let id_pwd1 = document.getElementById('id_password1')
+        let id_pwd2 = document.getElementById('id_password2')
+
+        function showhide() {
+            if (show) {
+                i_elem.classList = "input-group-text fa fa-eye-slash"
+                id_pwd1.type = "password"
+                id_pwd2.type = "password"
+                show = false;
+            }
+            else {
+                i_elem.classList = "input-group-text fa fa-eye"
+                id_pwd1.type = "text"
+                id_pwd2.type = "text"
+                show = true;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

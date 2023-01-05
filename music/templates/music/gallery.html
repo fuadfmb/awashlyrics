@@ -1,0 +1,194 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+<style>
+    .catimg_container {
+        position: relative;
+        text-align: center;
+    }
+
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        color: whitesmoke;
+        font-weight: bold;
+        background-color: #12345655;
+        border: 10px solid #f1f1f1;
+        padding: 10px;
+        width: 250px;
+        font-family: "Courier New", Courier, monospace;
+    }
+
+    /* .grad {
+        background: linear-gradient(55deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 85%);
+    } */
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <!-- breadcrumbs -->
+        <div class="col-12 " style="padding: -10px; ">
+            <ul class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Gallery</li>
+            </ul>
+        </div>
+
+        <!-- songs - list -->
+
+        <div class="col-12 col-sm-12 col-md-8">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    <span class="text-warning">
+                        Gallery
+                    </span>
+                    <span class="float-right text-warning">
+                        {{ galleries.count }} &nbsp;
+                    </span>
+            </div>
+
+            <div class="row">
+                {% for gallery in galleries %}
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6 catimg_container">
+                    <a href=" {% url 'music:gallery_slug' artist=gallery.artist.art_username %} ">
+                        <img src="/media/{{gallery.artimage_set.first.image_file }}" class="grad artImg m-1"
+                            alt="{{ artist.full_name }}" style="width: 100%; height: 220px;">
+                        <h5 class="centered">{{ gallery.artist.full_name }}</h5>
+                    </a>
+                </div>
+
+                {% endfor %}
+            </div>
+
+            <span class="current">
+                Page {{ galleries.number }} of {{ galleries.paginator.num_pages }}.
+            </span>
+            <ul class="pagination mt-1">
+
+                {% if galleries.has_previous %}
+                <li class="page-item small"><a class="page-link bg-dark text-white" href="?page=1">
+                        &laquo; first </a></li>
+                <li class="page-item small"><a class="page-link bg-dark text-white"
+                        href="?page={{ galleries.previous_page_number }}"> previous </a></li>
+                {% endif %}
+
+                {% if galleries.has_next %}
+                <li class="page-item small"><a class="page-link bg-dark text-white"
+                        href="?page={{ galleries.next_page_number }}">Next</a></li>
+                <li class="page-item small"><a class="page-link bg-dark text-white"
+                        href="?page={{ galleries.paginator.num_pages }}">last &raquo;</a></li>
+                {% endif %}
+            </ul>
+
+        </div>
+
+        <!-- trending albums -->
+        <div class="col-12 col-sm-12 col-md-4">
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Trending Albums
+            </div>
+            <!-- trending albums -->
+
+            <div class="row">
+
+                {% for album in trending_albums %}
+
+                <div class="col-4 col-sm-4 col-md-12 col-lg-6 mt-2 mb-2 card-click">
+                    <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}"
+                        class="no-underline">
+                        <div class="card mcard bg-dark text-white">
+                            <img class="card-img " src="/media/{{ album.alb_cover }}" alt="Art image"
+                                style="height: 100px;">
+                            <div class="card-body text-center">
+                                <p class="card-text small" style="margin: -10px;">
+                                    <span class="text-warning"> {{ album.alb_title }} </span>
+                                    <br>
+                                    {{ album.artist.art_firstname }} {{ album.artist.art_lastname }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Collection
+            </div>
+            <div class="row">
+
+                <div class="col">
+                    <div class="list-group  ">
+
+                        {% for category in categories %}
+
+                        <a href="{% url 'music:category_slug' category=category.cat_slug %}"
+                            class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-dark small">
+                            {{ category.cat_name | title }}
+                            <span class="badge badge-warning badge-pill"> {{ category.song_set.all.count }} </span>
+                        </a>
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- list head -->
+            <div class="mheading">
+                <span class="text-white small">
+                    Mobile App
+            </div>
+            <div class="row">
+
+                <!-- Mobile App -->
+
+                <div class="col">
+
+                    <div class="card bg-dark text-white shadow ">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Awash Music App</h6>
+                            <div class="card-text small">Download our Mobile App for better experience.
+                                <hr style="background-color: rgba(255, 255, 255, 0.171);">
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">Android</a>
+                                </span>
+                                <span>
+                                    <a href="#" class="btn text-warning border-warning">IOS</a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

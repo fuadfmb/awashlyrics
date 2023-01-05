@@ -1,0 +1,164 @@
+{% load static from staticfiles %}
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kiilolee Music</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    {% block stylesheet %}
+
+    {% endblock %}
+
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+
+    <!-- toolbar -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container">
+            <ul class="navbar-nav ">
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'odaa.png'%}" alt="Logo" style="width:40px;">
+                    <span class="navbar-text text-white small ">
+                        Kiilolee Music
+                    </span>
+                </a>
+
+            </ul>
+            <div class="navbar-text text-white small ">
+                {% if user.is_authenticated %}
+                <div class="dropdown dropleft ">
+                    <!-- <span style="font-size: 10px;">{{ user.username }} &nbsp;</span> -->
+                    <!-- <i class="fa fa-user fa-2x text-warning dropdown-toggle" data-toggle="dropdown"></i> -->
+                    <i class="fa fa-user fa-1x text-success text-center circularborder d-flex flex-wrap align-items-center justify-content-center"
+                        data-toggle="dropdown"></i>
+                    <!-- <div type="button" class="text-warning dropdown-toggle" data-toggle="dropdown">
+                        {{ user.username }}
+                    </div> -->
+                    <div class="dropdown-menu bg-dark">
+                        <!-- <div class="dropdown-header text-warning">{{ user.username }}</div>
+                        <hr> -->
+                        <a class="dropdown-item" href="{% url 'accounts:user-home' %}">Profile</a>
+                        <form action="{% url 'accounts:logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button class="dropdown-item" type=" submit" value="Logout">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <a class="mbtn" href="{% url 'accounts:login' %}">Login</a>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </nav>
+
+    {%block content%}
+    <!-- page content here... -->
+    {%endblock%}
+
+    <div style="height: 150px;">
+
+    </div>
+
+    <!-- footer -->
+    <div class=" bg-dark">
+
+        <div class="container text-center">
+            <div class="row pt-3 pb-3">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4 card-margin-tb">
+                    <h5 class=" text-warning">About</h5>
+                    <hr style="width: 50px; height: 4px; background-color: wheat; border-radius: 5px;">
+                    <p class="text-white small p-4">Orosoft Technologies<br>
+                        We are software developers dedicated to quality product.
+                    </p>
+                </div>
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4 card-margin-tb">
+                    <h5 class=" text-warning" id="contact">Contact</h5>
+                    <hr style="width: 50px; height: 4px; background-color: wheat; border-radius: 5px;">
+                    <p class="text-white small p-4">
+                        <i class="fa fa-map-marker"> </i> : Adama, Oromia, Ethiopia. <br>
+                        <i class="fa fa-comments-o"> </i> : info@kiilolee.com <br>
+                        <i class="fa fa-phone"> </i> : +2519xxxxxxxx <br>
+                    </p>
+                </div>
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4 card-margin-tb">
+                    <h5 class=" text-warning">Social</h5>
+
+                    <hr style="width: 50px; height: 4px; background-color: wheat; border-radius: 5px;">
+
+                    <p class="text-white small p-4">
+                        We are on facebook, instagram & telegram <br><br>
+                        <a class="btn btn-outline-light text-center rounded-circle aa"
+                            href=" http://www.facebook.com/orosoft">
+                            <i class="fa fa-facebook-square"></i>
+                        </a>
+                        <a class="btn btn-outline-light text-center rounded-circle aa"
+                            href="http://www.instagram.com/orosoft_tech">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a class="btn btn-outline-light text-center rounded-circle aa" href="http://t.me/orosoft">
+                            <i class="fa fa-telegram"></i>
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="text-white">
+                <hr style="background-color: rgba(87, 87, 87, 0.496);">
+                <p class="small text-white">
+                    <a href="{% url 'pages:showpage' 'disclaimer' %}" class="no-underline text-warning">
+                        Disclaimer
+                    </a>
+                    |
+                    <a href="{% url 'pages:showpage' 'tos' %}" class="no-underline text-warning">
+                        Terms of service
+                    </a>
+                    |
+                    <a href="{% url 'pages:showpage' 'privacy_policy' %}" class="no-underline text-warning">
+                        Privacy policy
+                    </a>
+                </p>
+                <hr style="background-color: rgba(87, 87, 87, 0.496);">
+                <p>&copy; 2022. Orosoft Technologies. </p>
+                <p></p>
+            </div>
+        </div>
+
+
+        <div style="height: 25px;"></div>
+
+    </div>
+
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    {% block margin %}
+
+    {% endblock %}
+
+    <script>
+        // set timer to close alerts after x seconds
+        window.setTimeout(closeAlerts, 5000);
+
+        function closeAlerts() {
+            $('.close').alert("close");
+        }
+
+    </script>
+
+</body>
+
+</html>

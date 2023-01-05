@@ -1,0 +1,144 @@
+{% extends 'base_layout.html' %}
+{% load static from staticfiles %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- breadcrumbs -->
+    <div class="col-12 " style="padding: -10px; margin-left: -15px;">
+        <ul class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/"> Home </a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'music:artist_page' artist=artist.art_username %}"> {{artist.full_name }} </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'music:album_page' artist=album.artist.art_username album=album.alb_slug %}">
+                    {{ album.alb_title }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a
+                    href="{% url 'music:song_page' artist=album.artist.art_username album=album.alb_slug song=song.song_slug %}">
+                    {{ song.song_title }}</a>
+            </li>
+            <li class="breadcrumb-item active">Lyrics </li>
+        </ul>
+    </div>
+
+    <h4 class="my-3">
+        {{ song.album.artist.full_name | title}} - {{ song.song_title | title}} Lyrics
+    </h4>
+
+    <div class="card col-12 bg-dark text-white card-margin-tb">
+
+        <div class="card-body">
+            <div class="row " style="align-items: center; margin: -10px 0px;">
+                <div class="ml-1">
+                    <div>
+                        <i class="fa fa-play-circle fa-3x" name="music" data-audio="/media/{{ song.song_file }}"
+                            data-sid="s{{forloop.counter0}}"
+                            data-title="{{ song.album.artist.full_name | title}} - {{ song.song_title | title}}"
+                            id="s{{forloop.counter0}}" onclick="setIndex( Number('{{ forloop.counter0 }}' ))"></i>
+                    </div>
+                </div>
+                <div style="width: 10px;">
+
+                </div>
+                <div class="col ">
+                    <div class="row " id="ggg">
+                        <a href="{% url 'music:song_page' artist=song.album.artist.art_username album=song.album.alb_slug song=song.song_slug %}"
+                            class="text-warning" style="font-size: 14px;">
+                            {{ song.album.artist.full_name | title}}
+                            -
+                            {{ song.song_title | title}} </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="lyrics mt-4">
+        {{ lyrics.first.ly_full | safe}}
+    </div>
+
+
+
+</div>
+
+
+{% endblock %}
+
+{% block margin %}
+
+<!-- modal -->
+{% if user.is_authenticated %}
+<script>
+    function deleteModal(x) {
+        var c = document.getElementById('cid');
+        c.value = x;
+        $("#deleteModal").modal();
+    }
+    function editModal(comm, vall) {
+        var cc = document.getElementById('id_comment');
+        var mbtn = document.getElementById('ccid');
+        cc.value = comm;
+        mbtn.value = vall;
+        $('#editModal').modal();
+    }
+
+
+    function like() {
+        // 
+        var tokens = document.getElementsByName('csrfmiddlewaretoken')
+        $.post("",
+            {
+                csrfmiddlewaretoken: tokens[0].value,
+                like: "like",
+            },
+            function (data, status) {
+                var x = document.getElementById('favor');
+                if (status == 'success' && data == "liked") {
+                    x.classList = "fa fa-heart text-danger"
+                }
+                else if (status == 'success' && data == "unliked") {
+                    x.classList = "fa fa-heart-o"
+                }
+                else {
+                    console.log("err...");
+                }
+            });
+    }
+
+    function playlist() {
+        var tokens = document.getElementsByName('csrfmiddlewaretoken')
+        $.post("",
+            {
+                csrfmiddlewaretoken: tokens[0].value,
+                playlist: "playlist",
+            },
+            function (data, status) {
+                var x = document.getElementById('playlisted');
+                if (status == 'success' && data == "added") {
+                    x.classList = "fa fa-minus-circle text-danger"
+                }
+                else if (status == 'success' && data == "removed") {
+                    x.classList = "fa fa-plus-circle"
+                }
+                else {
+                    console.log("err...");
+                }
+            });
+    }
+</script>
+{% endif %}
+<!-- /modal -->
+
+<script src="{% static 'player.js' %}"></script>
+
+{% endblock%}
