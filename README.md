@@ -56,14 +56,19 @@ watch the results in the right.
 After cloning this project, open the folder that have **_manage . py_**. and make sure there is a databse file called **db.sqlite3**.
 then open CMD and run the following commands respectively.
 
+- create super user with username, email & password
+```sh
+python manage.py createsuperuser
+```
+- make DB Migrations
 ```sh
 python manage.py makemigrations
 ```
-
+- Migrate
 ```sh
 python manage.py migrate
 ```
-
+- Run dev server
 ```sh
 python manage.py runserver
 ```
