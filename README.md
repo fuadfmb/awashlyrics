@@ -48,15 +48,27 @@ watch the results in the right.
 - Javascript + JQuery
 - Bootstrap
 
+## Admin Route
+- **Admin** : /o/k/admin/
 
 ## Installation
 
-After cloning this project, open the folder with manage.py in it.
-then open CMD and run
+After cloning this project, open the folder that have **_manage . py_**. and make sure there is a databse file called **db.sqlite3**.
+then open CMD and run the following commands respectively.
+
+```sh
+python manage.py makemigrations
+```
+
+```sh
+python manage.py migrate
+```
 
 ```sh
 python manage.py runserver
 ```
 
-is the only command you need to run as the folder already contains a sqlite database file.
+**And then you can test your site using :** 
+- as a (USER) : http://127.0.0.1:8000/
+- as an (ADMIN) : http://127.0.0.1:8000/o/k/admin/
 
