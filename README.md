@@ -2,7 +2,7 @@
 ## Music & Lyrics site for East Africa
 
 
-Kiilolee Music is a music and lyrics website powered with Django web framework. The Aim of this project is putting together representative samples of music in East Africa/archiving all east African music on a our server and allowing others to access those resources in an easy way.
+Kiilolee Music is a music and lyrics website powered with Django web framework. The Aim of this project is putting together representative samples of music in East Africa/archiving all east African music on a our server and allowing others to access those resources in an easy way. The site routes are designed in a way that search engines can easily index the site.
 
 This project contains different models. some of the models are : 
 
@@ -77,3 +77,5 @@ python manage.py runserver
 - as a (USER) : http://127.0.0.1:8000/
 - as an (ADMIN) : http://127.0.0.1:8000/o/k/admin/
 
+## Last but not least
+- You should create 3 pages : **Disclaimer, Tos & privacy policy** page using django-admin.
