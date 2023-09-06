@@ -5,7 +5,7 @@
 ## Music & Lyrics site for East Africa
 
 
-Kiilolee Music is a music and lyrics website powered with Django web framework. The Aim of this project is putting together representative samples of music in East Africa/archiving all east African music on a our server and allowing others to access those resources in an easy way. The site routes are designed in a way that search engines can easily index the site.
+Kiilolee Music is a music and lyrics website powered by the Django web framework. This project aims to put together representative samples of music in East Africa/archiving all East African music on our server and allowing others to access those resources easily. The site routes are designed in a way that search engines can easily index the site.
 
 This project contains different models. some of the models are : 
 
@@ -24,26 +24,20 @@ This project contains different models. some of the models are :
 
 ## How the Model is designed
 
-According to this project:- 
+According to this project:-
 - An **Artist** can have many **Albums**.
-- When a new **Artist** created, an new **Album** that belongs to an **Artist** called **'Singles'** will be added to **Albums**.
+- When a new **Artist** is created, a new Album that belongs to an Artist called '**Singles**' will be added to the **album**.
 - An **Album** always belongs to an **Artist**.
-- A Song always belongs to an **Album** or **Singles** album.
-- and a **Lyrics** always belongs to a **Song**.
-- A **Song** belongs to a **Language**
+- A **Song** always belongs to an **Album** or **Singles** album.
+- and **Lyrics** always belong to a **Song**.
 
 ## Other Features
 
-- An Admin can CRUD an **Artist, Album, Song, Lyrics** and every model using django admin
-- A user can then create his own **Playlist**.
-- A user can then add a **Song** to his **favorites** folder.
-- A user can also write a **comment** on an Album or a Song.
-- 
+- An **Admin** can CRUD an **Artist, Album, Song, Lyrics**, and every model using **Django admin**.
+- A **user** can then create his **Playlist**.
+- A **user** can then add a **Song** to his **favorites** folder.
+- A **user** can also **write a comment** on an** Album or a Song**.
 
-
-This text you see here is *actually- written in Markdown! To get a feel
-for Markdown's syntax, type some text into the left window and
-watch the results in the right.
 
 ## Technologies used in this project
 - Python 3
@@ -56,10 +50,10 @@ watch the results in the right.
 
 ## Installation
 
-After cloning this project, open the folder that have **_manage . py_**. and make sure there is a databse file called **db.sqlite3**.
+After cloning this project, open the folder that has **_manage.py_**. and make sure there is a database file called **db.sqlite3**.
 then open CMD and run the following commands respectively.
 
-- create super user with username, email & password
+- Create a super user with a username, email & password
 ```sh
 python manage.py createsuperuser
 ```
@@ -76,9 +70,11 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-**And then you can test your site using :** 
-- as a (USER) : http://127.0.0.1:8000/
-- as an (ADMIN) : http://127.0.0.1:8000/o/k/admin/
+**And then you can test your site using:** 
+- as a (USER): http://127.0.0.1:8000/
+- as an (ADMIN): http://127.0.0.1:8000/o/k/admin/
 
 ## Last but not least
 - You should create 3 pages : **Disclaimer, Tos & privacy policy** page using django-admin.
+
+Have fun with it :)
